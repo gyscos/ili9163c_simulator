@@ -1,7 +1,10 @@
 [package]
+authors = ["Alexandre Bury <alexandre.bury@gmail.com>"]
 name = "ili9163c_simulator"
 version = "0.1.0"
-authors = ["Alexandre Bury <alexandre.bury@gmail.com>"]
 
 [dependencies]
-ili9163c = { git = "https://github.com/gyscos/ili9163c" }
+piston_window = "0.57.0"
+
+[dependencies.ili9163c]
+git = "https://github.com/gyscos/ili9163c"

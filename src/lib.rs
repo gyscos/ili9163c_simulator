@@ -3,6 +3,7 @@ use std::rc::Rc;
 use std::sync::{Arc, Mutex};
 
 extern crate ili9163c;
+extern crate piston_window;
 
 mod pin;
 mod graphics;
@@ -11,7 +12,7 @@ use graphics::Pixel;
 use pin::{Pin, PinState};
 
 pub struct Simulator {
-    graphics: Arc<Mutex<graphics::Graphics>>,
+    graphics: Arc<Mutex<graphics::GraphicData>>,
 
     dcx: Rc<Cell<PinState>>,
     csx: Rc<Cell<PinState>>,
@@ -36,9 +37,13 @@ fn merge(msb: u8, lsb: u8) -> u16 {
 
 impl Simulator {
     fn new(width: usize, height: usize) -> Self {
-        let graphics = graphics::Graphics::new(width, height);
+        let graphics = graphics::GraphicData::new(width, height);
+        let graphics = Arc::new(Mutex::new(graphics));
+
+        graphics::start_graphics(graphics.clone());
+
         Simulator {
-            graphics: Arc::new(Mutex::new(graphics)),
+            graphics: graphics,
             dcx: Rc::new(Cell::new(PinState::Low)),
             csx: Rc::new(Cell::new(PinState::Low)),
             command: 0x00,
@@ -70,6 +75,12 @@ impl Simulator {
 
             // 29h: DISPON - Displan On
             0x29 => self.graphics.lock().unwrap().display = true,
+
+            // 2Ch: RAMWR - Memory Write
+            0x2C => {
+                self.cursor.x = self.xWindow.0;
+                self.cursor.y = self.yWindow.0;
+            }
 
             _ => (),
         }
