@@ -1,6 +1,7 @@
 use piston_window::*;
 use std::sync::{Arc, Mutex};
 use std::thread;
+use std::io::Cursor;
 
 #[derive(Copy, Clone, Debug, Default)]
 pub struct Pixel {
@@ -72,10 +73,10 @@ fn run_graphics(data: Arc<Mutex<GraphicData>>) {
         .build()
         .unwrap();
 
-    let path = "assets/background.png";
-    let img = Texture::from_path(&mut window.factory,
-                                 &path,
-                                 Flip::None,
+    let image_data = include_bytes!("../assets/background.png");
+    let img = ::image::load(Cursor::new(&image_data[..]), ::image::PNG).unwrap();
+    let texture = Texture::from_image(&mut window.factory,
+                                 img.as_rgba8().unwrap(),
                                  &TextureSettings::new())
         .unwrap();
 
@@ -86,7 +87,7 @@ fn run_graphics(data: Arc<Mutex<GraphicData>>) {
     while let Some(e) = window.next() {
         window.draw_2d(&e, |c, g| {
             clear([1.0; 4], g);
-            image(&img, c.transform, g);
+            image(&texture, c.transform, g);
 
             let data = data.lock().unwrap();
             if !data.display {

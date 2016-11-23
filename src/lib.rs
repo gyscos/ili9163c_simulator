@@ -3,6 +3,8 @@ use std::rc::Rc;
 use std::sync::{Arc, Mutex};
 
 extern crate ili9163c;
+
+extern crate image;
 extern crate piston_window;
 
 mod pin;

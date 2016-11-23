@@ -4,6 +4,7 @@ name = "ili9163c_simulator"
 version = "0.1.0"
 
 [dependencies]
+image = "0.10.3"
 piston_window = "0.57.0"
 
 [dependencies.ili9163c]
