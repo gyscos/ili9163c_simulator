@@ -61,7 +61,6 @@ impl GraphicData {
 
 pub fn start_graphics(data: Arc<Mutex<GraphicData>>) {
     thread::spawn(|| run_graphics(data));
-
 }
 
 fn run_graphics(data: Arc<Mutex<GraphicData>>) {
@@ -86,7 +85,6 @@ fn run_graphics(data: Arc<Mutex<GraphicData>>) {
 
     while let Some(e) = window.next() {
         window.draw_2d(&e, |c, g| {
-            clear([1.0; 4], g);
             image(&texture, c.transform, g);
 
             let data = data.lock().unwrap();

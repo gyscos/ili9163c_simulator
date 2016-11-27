@@ -1,5 +1,3 @@
-
-
 use ili9163c;
 use std::cell::Cell;
 use std::rc::Rc;
