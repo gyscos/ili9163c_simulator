@@ -1,8 +1,5 @@
-use std::cell::Cell;
-use std::rc::Rc;
-use std::sync::{Arc, Mutex};
-
 extern crate ili9163c;
+extern crate gpio_traits;
 
 extern crate image;
 extern crate piston_window;
@@ -10,8 +7,16 @@ extern crate piston_window;
 mod pin;
 mod graphics;
 
+use std::rc::Rc;
+use std::cell::Cell;
+use std::sync::{Arc, Mutex};
+
+use gpio_traits::spi::Serial;
+use gpio_traits::pin::PinState;
+
 use graphics::Pixel;
-use pin::{Pin, PinState};
+
+use pin::Pin;
 
 pub struct Simulator {
     graphics: Arc<Mutex<graphics::GraphicData>>,
@@ -169,8 +174,7 @@ impl Simulator {
     /// Returns a new driver connected to a simulator.
     ///
     /// Simulator has the given dimensions.
-    pub fn driver(width: usize, height: usize)
-                  -> ili9163c::driver::Driver<Self, Pin, Pin> {
+    pub fn driver(width: usize, height: usize) -> ili9163c::driver::Driver<Self, Pin, Pin> {
         let simulator = Simulator::new(width, height);
         let dcx = Pin::new(simulator.dcx.clone());
         let csx = Pin::new(simulator.csx.clone());
@@ -179,15 +183,17 @@ impl Simulator {
     }
 }
 
-impl ili9163c::spi::Serial for Simulator {
-    fn write(&mut self, data: u8) {
-        if let PinState::High = self.csx.get() {
-            return;
+impl Serial for Simulator {
+    fn write(&mut self, data: u8) -> u8 {
+        if self.csx.get().is_high() {
+            return 0;
         }
 
         match self.dcx.get() {
             PinState::Low => self.set_command(data),
             PinState::High => self.add_data(data),
         }
+
+        0
     }
 }

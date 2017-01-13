@@ -20,10 +20,7 @@ impl Pixel {
     }
 
     fn toColor(&self) -> types::Color {
-        [(self.r as f32) / 255f32,
-         (self.g as f32) / 255f32,
-         (self.b as f32) / 255f32,
-         1.0]
+        [(self.r as f32) / 255f32, (self.g as f32) / 255f32, (self.b as f32) / 255f32, 1.0]
     }
 }
 
@@ -66,8 +63,7 @@ pub fn start_graphics(data: Arc<Mutex<GraphicData>>) {
 fn run_graphics(data: Arc<Mutex<GraphicData>>) {
     let w = 650;
     let h = 860;
-    let mut window: PistonWindow = WindowSettings::new("ili9163c simulator",
-                                                       [w, h])
+    let mut window: PistonWindow = WindowSettings::new("ili9163c simulator", [w, h])
         .exit_on_esc(true)
         .build()
         .unwrap();
@@ -75,8 +71,8 @@ fn run_graphics(data: Arc<Mutex<GraphicData>>) {
     let image_data = include_bytes!("../assets/background.png");
     let img = ::image::load(Cursor::new(&image_data[..]), ::image::PNG).unwrap();
     let texture = Texture::from_image(&mut window.factory,
-                                 img.as_rgba8().unwrap(),
-                                 &TextureSettings::new())
+                                      img.as_rgba8().unwrap(),
+                                      &TextureSettings::new())
         .unwrap();
 
     let offset = Point { x: 70, y: 95 };
@@ -97,10 +93,7 @@ fn run_graphics(data: Arc<Mutex<GraphicData>>) {
                 let y = offset.y + (cellSize + spacing) * (i / data.width);
 
                 rectangle(pixel.toColor(),
-                          [x as f64,
-                           y as f64,
-                           cellSize as f64,
-                           cellSize as f64],
+                          [x as f64, y as f64, cellSize as f64, cellSize as f64],
                           c.transform,
                           g);
             }

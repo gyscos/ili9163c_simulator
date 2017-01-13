@@ -9,3 +9,6 @@ piston_window = "0.57.0"
 
 [dependencies.ili9163c]
 git = "https://github.com/gyscos/ili9163c"
+
+[dependencies.gpio_traits]
+git = "https://github.com/gyscos/gpio_traits"

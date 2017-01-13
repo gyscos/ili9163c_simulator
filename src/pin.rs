@@ -1,12 +1,8 @@
 use ili9163c;
+use gpio_traits::pin::{Output, PinState};
 use std::cell::Cell;
 use std::rc::Rc;
 
-#[derive(Copy, Clone, Debug)]
-pub enum PinState {
-    Low,
-    High,
-}
 
 pub struct Pin {
     state: Rc<Cell<PinState>>,
@@ -18,7 +14,7 @@ impl Pin {
     }
 }
 
-impl ili9163c::gpio::Pin for Pin {
+impl Output for Pin {
     fn high(&mut self) {
         self.state.set(PinState::High);
     }
